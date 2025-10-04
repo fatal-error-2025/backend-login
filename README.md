@@ -1,6 +1,21 @@
-# Backend login service
+# Plan My Weather - Backend Login 🔑
 
-Setup (local development):
+This is the **backend-login service** for **Plan My Weather**, built with **FastAPI** and **PostgreSQL (Neon)**.  
+It handles user authentication (login and registration) and management of personal weather-related tasks.
+
+---
+
+## Features
+
+- 📧 User registration and login  
+- 🌦️ CRUD operations for personal weather plans/tasks  
+- 🐘 PostgreSQL database hosted on **Neon**  
+- 🔄 CORS enabled for frontend communication  
+- 🐍 Written in Python 3.11+  
+
+---
+
+## Getting Started
 
 1. Create a virtual environment and install requirements:
 
