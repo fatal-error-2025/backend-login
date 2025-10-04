@@ -1,47 +1,22 @@
 from fastapi import FastAPI
-
-# Load environment and set dev defaults before importing routers that depend on them
-import os
-from dotenv import load_dotenv
-load_dotenv()
-
-if not os.getenv("SECRET_KEY"):
-    # only for local development; use a secure value in production
-    os.environ["SECRET_KEY"] = "dev-secret-key"
-
-if not os.getenv("ALGORITHM"):
-    os.environ["ALGORITHM"] = "HS256"
-
-if not os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"):
-    os.environ["ACCESS_TOKEN_EXPIRE_MINUTES"] = "30"
-
-from . import models, database
-from .routes import auth
 from fastapi.middleware.cors import CORSMiddleware
+from .routes import auth, tasks
+from . import models
+from .database import engine
 
-models.Base.metadata.create_all(bind=database.engine)
+models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
-# Configuración de CORS: permitir orígenes comunes de desarrollo (Vite, CRA, etc.)
-DEFAULT_ORIGINS = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-    "http://localhost:8080",
-]
-
+# CORS para frontend en localhost:3000
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=DEFAULT_ORIGINS,
+    allow_origins=["http://localhost:3000", "http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Rutas
 app.include_router(auth.router)
-
-@app.get("/")
-def read_root():
-    return {"message": "API funcionando 🚀"}
+app.include_router(tasks.router)
